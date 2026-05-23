@@ -17,7 +17,7 @@
  */
 
 #include <stdint.h>
-#include "kronos_core.h"
+#include "kronos.h"
 
 
 #define STM32L4_PERIPH_BASE     0x40000000UL
@@ -71,7 +71,7 @@ static void blink_execution_task(void)
 {
 	uint8_t blink_enabled = 0U;
 	kronos_mail_t mail;
-	int32_t status;
+	kronos_status_e status;
 
 	for (;;)
 	{
