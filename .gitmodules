@@ -1,0 +1,3 @@
+[submodule "Libs/KronosRTOS"]
+	path = Libs/KronosRTOS
+	url = https://github.com/devcoons/kronos-rtos.git
