@@ -75,7 +75,7 @@ static void blink_execution_task(void)
 
 	for (;;)
 	{
-		status = RTOS_IngressReceive(&mail);
+		status = Kronos_IngressReceive(&mail);
 		if ((status == KRONOS_STATUS_OK) && (mail.payload_size > 0U))
 		{
 			blink_enabled = (mail.payload[0] != 0U) ? 1U : 0U;
@@ -91,7 +91,7 @@ static void blink_execution_task(void)
 			
 		}
 
-		RTOS_Delay(50U);
+		Kronos_Delay(50U);
 	}
 }
 
@@ -100,20 +100,20 @@ static void blink_commanding_task(void)
 	uint8_t led_state = 0U;
 	int32_t status;
 
-	status = RTOS_IngressResolve(&g_blinkExecutionIngress, "blink_exec");
+	status = Kronos_IngressResolve(&g_blinkExecutionIngress, "blink_exec");
 	if (status != KRONOS_STATUS_OK)
 	{
 		for (;;)
 		{
-			RTOS_Delay(1000U);
+			Kronos_Delay(1000U);
 		}
 	}
 
 	for (;;)
 	{
 		led_state ^= 1U;
-		(void)RTOS_EgressSend(&g_blinkExecutionIngress, BLINK_COMMAND_MESSAGE_ID, &led_state, (uint32_t)sizeof(led_state));
-		RTOS_Delay(1000U);
+		(void)Kronos_EgressSend(&g_blinkExecutionIngress, BLINK_COMMAND_MESSAGE_ID, &led_state, (uint32_t)sizeof(led_state));
+		Kronos_Delay(1000U);
 	}
 }
 
@@ -123,9 +123,9 @@ int main(void)
 {
 	board_led_init();
 
-	RTOS_Init();
+	Kronos_Init();
 
-	if (RTOS_CreateTask(blink_execution_task, BLINK_TASK_STACK_WORDS, "blink_exec") < 0)
+	if (Kronos_TaskCreate(blink_execution_task, BLINK_TASK_STACK_WORDS, "blink_exec") < 0)
 	{
 		for (;;)
 		{
@@ -134,7 +134,7 @@ int main(void)
 		/* Unreachable. */
 	}
 
-	if (RTOS_CreateTask(blink_commanding_task, BLINK_TASK_STACK_WORDS, "blink_cmd") < 0)
+	if (Kronos_TaskCreate(blink_commanding_task, BLINK_TASK_STACK_WORDS, "blink_cmd") < 0)
 	{
 		for (;;)
 		{
@@ -143,7 +143,7 @@ int main(void)
 		/* Unreachable. */
 	}
 
-	RTOS_Start();
+	Kronos_Start();
 
 	for (;;)
 	{
